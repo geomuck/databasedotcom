@@ -42,9 +42,9 @@ describe Databasedotcom::Client do
       end
 
       it "takes configuration information from a URL" do
-        ENV["DATABASE_COM_URL"] = "orce://prerelna1.pre.salesforce.com?user=app189664@heroku.com&password=WeOpvh31ppK&oauth_key=3MVGDo9lKcPoNINVBL1L01Rvbe7zvgN2O760vd1OfUswGppw0qSj5Yg74yaFIa_YMM9TGFVSt3jcy54l87Cw1vS&oauth_secret=624857638194281274122"
+        ENV["DATABASE_COM_URL"] = "orce://prerelna1.pre.salesforce.com?user=app189664@heroku.com&password=WeOpvh31ppK&oauth_key=3MVGDo9lKcPoNINVBL1L01Rvbe7zvgN2O760vd1OfUswGppw0qSj5Yg74yaFIa_YMM9TGFVSt3jcy54l87Cw1vS==&oauth_secret=624857638194281274122"
         @client = Databasedotcom::Client.new
-        @client.client_id.should == "3MVGDo9lKcPoNINVBL1L01Rvbe7zvgN2O760vd1OfUswGppw0qSj5Yg74yaFIa_YMM9TGFVSt3jcy54l87Cw1vS"
+        @client.client_id.should == "3MVGDo9lKcPoNINVBL1L01Rvbe7zvgN2O760vd1OfUswGppw0qSj5Yg74yaFIa_YMM9TGFVSt3jcy54l87Cw1vS=="
         @client.client_secret.should == "624857638194281274122"
         @client.username.should == "app189664@heroku.com"
         @client.password.should == "WeOpvh31ppK"
