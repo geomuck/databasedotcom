@@ -74,7 +74,7 @@ module Databasedotcom
 
       if ENV['DATABASE_COM_URL']
         url = URI.parse(ENV['DATABASE_COM_URL'])
-        url_options = Hash[url.query.split("&").map{|q| q.split("=")}].symbolize_keys!
+        url_options = Hash[url.query.split("&").map{|q| q.split(/=?/)}].symbolize_keys!
         self.host = url.host
         self.client_id = url_options[:oauth_key] || url_options[:client_id]
         self.client_secret = url_options[:oauth_secret] || url_options[:client_secret]
