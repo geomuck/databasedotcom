@@ -36,6 +36,8 @@ module Databasedotcom
     attr_accessor :ca_file
     # The SSL verify mode configured for this instance, if any
     attr_accessor :verify_mode
+    # The callback URL
+    attr_accessor :redirect_uri
 
     # Returns a new client object. _options_ can be one of the following
     #
@@ -78,6 +80,8 @@ module Databasedotcom
         self.client_secret = url_options[:oauth_secret]
         self.username = url_options[:user]
         self.password = url_options[:password]
+        self.refresh_token = url_options[:refresh_token]
+        self.redirect_uri = url_options[:redirect_uri]
       else
         self.client_id = ENV['DATABASEDOTCOM_CLIENT_ID'] || @options[:client_id]
         self.client_secret = ENV['DATABASEDOTCOM_CLIENT_SECRET'] || @options[:client_secret]
@@ -102,6 +106,7 @@ module Databasedotcom
     # Raises SalesForceError if an error occurs
     def authenticate(options = nil)
       if user_and_pass?(options)
+print "#################### in user_and_pass"
         req = https_request(self.host)
         user = self.username || options[:username]
         pass = self.password || options[:password]
@@ -112,6 +117,15 @@ module Databasedotcom
         raise SalesForceError.new(result) unless result.is_a?(Net::HTTPOK)
         self.username = user
         self.password = pass
+        parse_auth_response(result.body)
+      elsif self.redirect_uri
+print "#################### in redirect_uri"
+        req = https_request(self.host)
+        path = "/services/oauth2/token?grant_type=refresh_token&client_id=#{self.client_id}&client_secret=#{client_secret}&refresh_token=#{self.refresh_token}&redirect_uri=#{self.redirect_uri}"
+        log_request("https://#{self.host}/#{path}")
+        result = req.post(path, "")
+        log_response(result)
+        raise SalesForceError.new(result) unless result.is_a?(Net::HTTPOK)
         parse_auth_response(result.body)
       elsif options.is_a?(Hash)
         if options.has_key?("provider")
