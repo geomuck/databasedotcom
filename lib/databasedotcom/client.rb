@@ -76,8 +76,8 @@ module Databasedotcom
         url = URI.parse(ENV['DATABASE_COM_URL'])
         url_options = Hash[url.query.split("&").map{|q| q.split("=")}].symbolize_keys!
         self.host = url.host
-        self.client_id = url_options[:oauth_key]
-        self.client_secret = url_options[:oauth_secret]
+        self.client_id = url_options[:oauth_key] || url_options[:client_id]
+        self.client_secret = url_options[:oauth_secret] || url_options[:client_secret]
         self.username = url_options[:user]
         self.password = url_options[:password]
         self.refresh_token = url_options[:refresh_token]
@@ -106,7 +106,7 @@ module Databasedotcom
     # Raises SalesForceError if an error occurs
     def authenticate(options = nil)
       if user_and_pass?(options)
-print "#################### in user_and_pass"
+print "#################### in user_and_pass\n"
         req = https_request(self.host)
         user = self.username || options[:username]
         pass = self.password || options[:password]
@@ -119,9 +119,9 @@ print "#################### in user_and_pass"
         self.password = pass
         parse_auth_response(result.body)
       elsif self.redirect_uri
-print "#################### in redirect_uri"
+print "#################### in redirect_uri\n"
         req = https_request(self.host)
-        path = "/services/oauth2/token?grant_type=refresh_token&client_id=#{self.client_id}&client_secret=#{client_secret}&refresh_token=#{self.refresh_token}&redirect_uri=#{self.redirect_uri}"
+        path = "/services/oauth2/token?grant_type=refresh_token&client_id=#{self.client_id}&client_secret=#{self.client_secret}&refresh_token=#{self.refresh_token}&redirect_uri=#{self.redirect_uri}"
         log_request("https://#{self.host}/#{path}")
         result = req.post(path, "")
         log_response(result)
