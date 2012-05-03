@@ -121,7 +121,7 @@ print "#################### in user_and_pass\n"
       elsif self.redirect_uri
 print "#################### in redirect_uri\n"
         req = https_request(self.host)
-        path = "/services/oauth2/token?grant_type=refresh_token&client_id=#{self.client_id}&client_secret=#{self.client_secret}&refresh_token=#{self.refresh_token}&redirect_uri=#{self.redirect_uri}"
+        path = "/services/oauth2/token?grant_type=refresh_token&client_id=#{self.client_id}&client_secret=#{self.client_secret}&refresh_token=#{self.refresh_token}&redirect_uri=#{self.redirect_uri}&format=urlencoded"
         log_request("https://#{self.host}/#{path}")
         result = req.post(path, "")
         log_response(result)
